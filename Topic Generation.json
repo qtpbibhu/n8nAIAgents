@@ -1,0 +1,219 @@
+{
+  "name": "Topic Generation",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        -32
+      ],
+      "id": "1ec938d1-6665-464d-8212-3a9ce46f67d8",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "give me Hindi stories",
+        "options": {
+          "systemMessage": "===================================================\nSTEP 1 — GIVE 10 TRENDING STORY TOPIC IDEAS\n==================================================\nWhenever the user starts a conversation, regardless of whether they say\n\"hi\", give 10 emotionally engaging and potentially viral story topic ideas\nmatching the channel niche.\n\nIMPORTANT:\n- If the user has already provided a specific story idea, DO NOT replace it\n  with unrelated topics.\n- Instead, create 10 different variations, angles, twists, or approaches based\n  on the user's idea.\n- Include a variety of family drama, village/city stories, social-message\n  stories, motivational stories, emotional twists, and relatable situations.\n- Include at least 1–2 ideas connected to current seasons, festivals,\n  celebrations, or trending social themes when appropriate.\n- Titles should be highly clickable and curiosity-driven but should still\n  match the emotional storytelling niche.\n\nOUTPUT FORMAT — CRITICAL:\nReturn ONLY a valid JSON array. Do NOT include any greeting, explanation,\nmarkdown formatting, backticks, or extra text before or after the JSON.\nThe response must start with [ and end with ].\n\nEach object in the array must follow this exact structure:\n[\n  {\n    \"number\": 1,\n    \"title\": \"Topic Title in Hindi\",\n    \"description\": \"One-line hook clearly showing the emotion, conflict, or twist, in Hindi\"\n  },\n  {\n    \"number\": 2,\n    \"title\": \"...\",\n    \"description\": \"...\"\n  }\n]\n\nDo NOT add the \"Inme se konsa topic pasand aaya?\" question inside the JSON.\nInstead, after the JSON array is generated, wait silently for the user's\nnext message (they will reply with a number or a new topic).\n\nSTOP HERE.\nDo NOT ask about video duration yet.\nDo NOT write the story yet.\nWait for the user's response."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -144,
+        -32
+      ],
+      "id": "37897307-5e31-41d4-80ec-6503caf09bb6",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -192,
+        192
+      ],
+      "id": "862477bc-b272-4313-804f-103a133a2574",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "JxMH9lEMXQIe264M",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const topics = JSON.parse($input.first().json.output); return topics.map(t => ({ json: t }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -32
+      ],
+      "id": "81574d79-6401-418e-87d7-58e30e90bf43",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4",
+          "mode": "list",
+          "cachedResultName": "Reels_Planning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1407288632,
+          "mode": "list",
+          "cachedResultName": "master",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit#gid=1407288632"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.number + 1 }}",
+            "Topic": "={{ $('Code in JavaScript').item.json.title }}",
+            "Description": "={{ $('Code in JavaScript').item.json.description }}",
+            "Status": "Ready"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        368,
+        -32
+      ],
+      "id": "fd186cd4-848e-4667-b5d7-f5b32c775c5f",
+      "name": "Update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "92v6mg7EVIEqMxco",
+          "name": "Google Sheets account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9fcc4d86-4d5d-4494-8c90-189655af4ba5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7817e5bf8a492626ae91ae546d3585a59ea7e009dbeb3a407bcfc7d600901281"
+  },
+  "nodeGroups": [],
+  "id": "6yM29oKFGnKYhnbR",
+  "tags": []
+}

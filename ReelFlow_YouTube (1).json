@@ -1,0 +1,315 @@
+{
+  "name": "ReelFlow_YouTube",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{ $json.cloudinary_url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "65cb6808-2e62-4bbc-a7a6-b0caea094bc1",
+      "name": "Download Video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        528,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{ $('Get row(s) in sheet').item.json.title }} ||abbcreation",
+        "regionCode": "IN",
+        "categoryId": "24",
+        "options": {
+          "description": "=Welcome to abbcreation by kids!\nTopic : {{ $('Get row(s) in sheet').item.json.title }}\nEnjoy fun, heartwarming, and entertaining family-friendly videos featuring on baby, cute characters, funny conversations, life lessons, and meaningful messages.\n\nOur videos are created to bring smiles, laughter, and positive moments for viewers of all ages. ❤️\n\nSubscribe to abbcreation for more fun and creative videos!\n\n#abbcreation #kids #FamilyFriendly #KidsVideos #FunnyVideos #Shorts #YouTubeShorts #IndianKids #KidsComedy #Entertainment",
+          "privacyStatus": "public",
+          "tags": "abbcreation"
+        }
+      },
+      "id": "72c32cb7-0ace-4e8f-a55d-e7971cbdd995",
+      "name": "Upload Video",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        976,
+        0
+      ],
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "oC4oh9ZjZxwfA5ex",
+          "name": "YouTube account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4",
+          "mode": "list",
+          "cachedResultName": "Reels_Planning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 69158726,
+          "mode": "list",
+          "cachedResultName": "youtube_reel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit#gid=69158726"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Get row(s) in sheet').item.json.row_number }}",
+            "status": "Posted"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cloudinary_url",
+              "displayName": "cloudinary_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1216,
+        0
+      ],
+      "id": "5f56bba5-18ff-44ab-83e4-827ccd4a2812",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "92v6mg7EVIEqMxco",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4",
+          "mode": "list",
+          "cachedResultName": "Reels_Planning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 69158726,
+          "mode": "list",
+          "cachedResultName": "youtube_reel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit#gid=69158726"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "Ready"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        240,
+        0
+      ],
+      "id": "24f076b6-70ec-40f7-bb2c-acb114ebf247",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "92v6mg7EVIEqMxco",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 120
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        752,
+        0
+      ],
+      "id": "8fc24c94-ccf1-4c68-9ef2-0a8d712e68b0",
+      "name": "Wait",
+      "webhookId": "a17258ab-cc86-45ff-831f-9cd53fcb9c23"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 20,
+              "triggerAtMinute": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d96fc891-23b7-4838-b2b9-d24d83a6f7fa",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Download Video": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Video": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Download Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Upload Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "ea287e41-ce2a-4f00-b7a5-0aeaea3e8fdf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7817e5bf8a492626ae91ae546d3585a59ea7e009dbeb3a407bcfc7d600901281"
+  },
+  "nodeGroups": [],
+  "id": "BUoZ1tvXCs2nA7EA",
+  "tags": []
+}

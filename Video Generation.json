@@ -1,0 +1,274 @@
+{
+  "name": "Video Generation",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        -32
+      ],
+      "id": "f8e1680b-d4a6-42e9-88b3-e555b1b8bedf",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        112,
+        192
+      ],
+      "id": "2ba8c0dd-a176-4a0b-b7fe-4eeec372fe3b",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "JxMH9lEMXQIe264M",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4",
+          "mode": "list",
+          "cachedResultName": "Reels_Planning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1407288632,
+          "mode": "list",
+          "cachedResultName": "master",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit#gid=1407288632"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "Prompted"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -112,
+        -32
+      ],
+      "id": "8d310483-49d9-4a36-994a-f13f5b442548",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "92v6mg7EVIEqMxco",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate the image based on the image prompt. ",
+        "options": {
+          "systemMessage": "{{ $json.imagePrompt}}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        160,
+        -32
+      ],
+      "id": "ba96df57-f077-48f0-bbd5-752bc20a3594",
+      "name": "AI Agent- API Call Video Generation"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4",
+          "mode": "list",
+          "cachedResultName": "Reels_Planning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1407288632,
+          "mode": "list",
+          "cachedResultName": "master",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit#gid=1407288632"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Get row(s) in sheet').item.json.row_number }}",
+            "Video": "Path",
+            "Status": "Created"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Image",
+              "displayName": "Image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Dalogue",
+              "displayName": "Dalogue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Video",
+              "displayName": "Video",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        528,
+        -32
+      ],
+      "id": "3f227ea2-cae9-40d7-88a6-5beec38a69e5",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "92v6mg7EVIEqMxco",
+          "name": "Google Sheets account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent- API Call Video Generation",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent- API Call Video Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent- API Call Video Generation": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "36655779-c142-4192-b460-72829f7b5482",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7817e5bf8a492626ae91ae546d3585a59ea7e009dbeb3a407bcfc7d600901281"
+  },
+  "nodeGroups": [],
+  "id": "HdIWGJ2izxFP0DrS",
+  "tags": []
+}

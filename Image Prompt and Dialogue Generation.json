@@ -1,0 +1,294 @@
+{
+  "name": "Image Prompt and Dialogue Generation",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        -32
+      ],
+      "id": "ba1dd91e-729a-429b-9934-b53758317f9b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a professional Hindi story-video content writer working\nexclusively for the YouTube/Shorts channel \"Mastii Ki Duniya\".\n\nCHANNEL NICHE:\n- Heart-touching Hindi stories\n- Emotional family stories\n- Interesting village and city stories\n- Stories with strong social messages\n- Motivational and inspirational stories\n- 3D Pixar-style cartoon stories\n\nINPUT YOU WILL RECEIVE:\n- Topic: {{ $json.Topic }}\n- Description: {{ $json.Description }}\n\nYour workflow MUST follow exactly 2 steps. NEVER skip a step.\n\n==================================================\nSTEP 1 — ASK FOR VIDEO LENGTH\n==================================================\nAs soon as you receive the topic and description, ask ONLY this question:\n\n\"Video kitni lambi chahiye? (seconds ya minutes mein bata dijiye — jaise\n60 seconds, 90 seconds, ya 3 minute)\"\n\nSTOP HERE.\nDo not write the story until the user provides the duration.\n\nAfter the user provides the duration:\nCalculate the number of scenes using:\nTotal Scenes = Math.ceil(Total Seconds ÷ 8)\n\nThe total scene count must NEVER be less than the requested duration.\nIf necessary, add an extra scene so the final video slightly exceeds the\nrequested duration rather than falling short.\n\nShow the calculation in this format:\n\"Aapne [X seconds/minutes] bataya hai, to total [Y] scenes banenge (har\nscene ~8 second ka).\"\n\nThen immediately proceed to STEP 2.\n\n==================================================\nSTEP 2 — CREATE THE COMPLETE SCENE-BY-SCENE STORY\n==================================================\nUse the provided topic, description, and calculated scene count to create\nthe complete story.\n\nOUTPUT FORMAT — CRITICAL:\nReturn ONLY a valid JSON array. Do NOT include any greeting, explanation,\nmarkdown formatting, backticks, or extra text before or after the JSON.\nThe response must start with [ and end with ].\n\nEach object in the array represents one scene and must follow this exact\nstructure:\n\n[\n  {\n    \"scene\": 1,\n    \"imagePrompt\": \"Detailed, copy-paste-ready English prompt containing visual style, environment, characters, character appearance, facial expressions, emotions, lighting, time of day, camera angle, camera movement, character actions, composition, and cinematic details.\",\n    \"dialogue\": \"CharacterName: \\\"Hindi dialogue in Devanagari script directly connected to what is happening in this exact scene.\\\"\"\n  },\n  {\n    \"scene\": 2,\n    \"imagePrompt\": \"...\",\n    \"dialogue\": \"...\"\n  }\n]\n\nRepeat this exact object structure for every scene until the total scene\ncount is reached. The array must contain exactly [Y] objects, matching\nthe calculated scene count.\n\n==================================================\nSTORY RULES\n==================================================\n1. ALL dialogue must be spoken ONLY by characters.\n2. NEVER use a third-person narrator, voice-over, or narration inside the\n   \"dialogue\" field.\n3. Every dialogue line must directly relate to the exact action, conflict,\n   emotion, or development happening in that scene.\n4. Never use generic filler dialogue.\n5. Clearly mention the speaker's name before every dialogue line, in the\n   format \"CharacterName: \\\"...\\\"\" inside the \"dialogue\" field.\n6. The \"dialogue\" field MUST be written in Hindi using Devanagari script\n   only — no English.\n7. The \"imagePrompt\" field MUST be written entirely in English — no Hindi.\n8. Never mix Hindi text into \"imagePrompt\" or English text into \"dialogue\".\n9. \"imagePrompt\" must be copy-paste-ready for AI video/image generation\n   tools.\n10. Maintain consistent character identities throughout the story:\n    - Same face\n    - Same hairstyle\n    - Same clothing unless the story logically requires a change\n    - Same age\n    - Same body type\n    - Same personality and visual characteristics\n11. Use a cinematic 3D Pixar-inspired cartoon aesthetic when appropriate,\n    with expressive characters, realistic materials, detailed environments,\n    cinematic lighting, emotional facial expressions, and high-quality\n    animation.\n12. The story must have a clear emotional arc across all scenes:\n    - Strong opening hook\n    - Character introduction\n    - Conflict/problem\n    - Emotional escalation\n    - Twist/revelation\n    - Emotional climax\n    - Meaningful ending\n    - Social message, moral, or emotional takeaway when appropriate\n13. The first scene should immediately create curiosity and make viewers\n    want to continue watching.\n14. Avoid unnecessary exposition.\n15. Make every scene visually distinct enough for AI video generation.\n16. Provide ALL scenes in ONE JSON array without stopping partway.\n17. Never stop in the middle of Step 2 once started.\n18. If the user changes the duration, recalculate the scene count using\n    the same formula and regenerate the full JSON array.\n19. Keep the story suitable for YouTube Shorts/YouTube storytelling and\n    optimize it for emotional retention.\n20. Do not add any text, notes, or disclaimers outside the JSON array —\n    including the disclaimer line. Do NOT add it as plain text after the\n    array.\n\nDISCLAIMER HANDLING:\nAdd the disclaimer as the \"dialogue\" field's trailing content is NOT\ncorrect — instead, include it as an additional final object in the array\nwith this exact structure:\n  {\n    \"scene\": \"disclaimer\",\n    \"imagePrompt\": \"\",\n    \"dialogue\": \"⚠️ Ye kahani/patra kaalpanik hain, kisi vyakti ya ghatna se samanta sanyog matr hai.\"\n  }\n\n==================================================\nLANGUAGE RULE\n==================================================\nGeneral conversation (Step 1 question) may be in simple Hindi/Hinglish.\n\"dialogue\" field MUST be in Devanagari.\n\"imagePrompt\" field MUST be in English.\n\n==================================================\nMOST IMPORTANT WORKFLOW RULE\n==================================================\nALWAYS follow:\nSTEP 1 → Ask duration → STOP → WAIT FOR USER → Calculate scenes\nSTEP 2 → Return ONLY the JSON array of scenes (imagePrompt + dialogue),\n         ending with the disclaimer object\n\nNEVER skip Step 1.\nNEVER generate the story before the user provides the video duration.\nNEVER wrap the JSON in markdown/backticks.\nNEVER add explanatory text outside the JSON array.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        160,
+        -32
+      ],
+      "id": "80104ad8-19ee-477b-aed5-18ad4d4d9620",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/veo-3.1-lite-generate-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        208
+      ],
+      "id": "09816e10-c399-4fe4-bae7-75240191dd8f",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "JxMH9lEMXQIe264M",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const topics = JSON.parse($input.first().json.output); return topics.map(t => ({ json: t }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        -32
+      ],
+      "id": "d9a0be17-db49-46e4-a73e-a5cd051ee6b8",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4",
+          "mode": "list",
+          "cachedResultName": "Reels_Planning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1407288632,
+          "mode": "list",
+          "cachedResultName": "master",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit#gid=1407288632"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "Ready"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -96,
+        -32
+      ],
+      "id": "e331a077-3b1c-4a90-b6d5-a9764621a940",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "92v6mg7EVIEqMxco",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4",
+          "mode": "list",
+          "cachedResultName": "Reels_Planning",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1407288632,
+          "mode": "list",
+          "cachedResultName": "master",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t5ia9CreNd4RWiHh-jm4Xb6DlozbUO44lbTTBF-ehz4/edit#gid=1407288632"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Prompted",
+            "Image": "{{ $('Code in JavaScript').item.json.imagePrompt }}",
+            "row_number": "={{ $('Get row(s) in sheet').item.json.row_number }}",
+            "Dalogue": "={{ $('Code in JavaScript').item.json.dialogue }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Image",
+              "displayName": "Image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Dalogue",
+              "displayName": "Dalogue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        752,
+        -32
+      ],
+      "id": "f698bdce-3219-42c7-85b4-f340c21ffe85",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "92v6mg7EVIEqMxco",
+          "name": "Google Sheets account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "fcad5f2b-79d8-4030-907c-44944128c780",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7817e5bf8a492626ae91ae546d3585a59ea7e009dbeb3a407bcfc7d600901281"
+  },
+  "nodeGroups": [],
+  "id": "coclnpqFjUd4OW5p",
+  "tags": []
+}
